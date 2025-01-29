@@ -3,6 +3,7 @@ package com.example.taskapp
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
@@ -43,6 +44,7 @@ val taskNetworkRepository = TaskNetworkRepository(ServiceConfiguration.taskServi
 class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val context = this
 
         runBlocking {
             try {
@@ -50,11 +52,13 @@ class HomeActivity : ComponentActivity() {
             }
             catch (e:Exception){
                 Log.e("MyTaskApp", "Network get all tasks: $e")
+                taskList=StorageOperations.readTaskList(context).toMutableList()
+                Toast.makeText(context, "Lista pobrana z pamieci urządzenia. Brak połącznenia z internetem ", Toast.LENGTH_LONG).show()
             }
 
        }
 
-        //taskList=StorageOperations.readTaskList(this).toMutableList()
+
 
         //val welcomeValue: String? = intent.getStringExtra("welcome_value")
 
@@ -66,7 +70,13 @@ class HomeActivity : ComponentActivity() {
             StorageOperations.writeTaskList(this, taskList)
 
             runBlocking {
-                taskNetworkRepository.addTask(task)
+                try {
+                    taskNetworkRepository.addTask(task)
+                }catch (e: Exception){
+                    Log.e("MyTaskApp", "Task dodany do pamieci urządzenia: $e")
+                    Toast.makeText(context, "Brak poączenia z internetem, spróbuj ponownie", Toast.LENGTH_LONG).show()
+                }
+
             }
 
 
@@ -84,7 +94,7 @@ class HomeActivity : ComponentActivity() {
             horizontalAlignment = Alignment.Start
         ) {
             Text(
-                text = " Lista TODO xD ",
+                text = " Lista TODO cxD ",
                 fontSize = 30.sp
 
 
