@@ -44,20 +44,9 @@ val taskNetworkRepository = TaskNetworkRepository(ServiceConfiguration.taskServi
 class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val context = this
 
-        runBlocking {
-            try {
-                taskList = taskNetworkRepository.getAllTasks().toMutableList()
-            }
-            catch (e:Exception){
-                Log.e("MyTaskApp", "Network get all tasks: $e")
-                taskList=StorageOperations.readTaskList(context).toMutableList()
-                Toast.makeText(context, "Lista pobrana z pamieci urządzenia. Brak połącznenia z internetem ", Toast.LENGTH_LONG).show()
-            }
 
-       }
-
+        getAllTasksViaNetwork()
 
 
         //val welcomeValue: String? = intent.getStringExtra("welcome_value")
@@ -69,15 +58,7 @@ class HomeActivity : ComponentActivity() {
             taskList.add(task)
             StorageOperations.writeTaskList(this, taskList)
 
-            runBlocking {
-                try {
-                    taskNetworkRepository.addTask(task)
-                }catch (e: Exception){
-                    Log.e("MyTaskApp", "Task dodany do pamieci urządzenia: $e")
-                    Toast.makeText(context, "Brak poączenia z internetem, spróbuj ponownie", Toast.LENGTH_LONG).show()
-                }
-
-            }
+            addTaskViaNetwork(task)
 
 
         }
@@ -85,6 +66,45 @@ class HomeActivity : ComponentActivity() {
             //HomeText()
             HomeView()
         }
+    }
+
+    private fun getAllTasksViaNetwork() {
+        val context = this
+        runBlocking {
+            try {
+                taskList = taskNetworkRepository.getAllTasks().toMutableList()
+                StorageOperations.writeTaskList(context, taskList)
+            } catch (e: Exception) {
+                Log.e("MyTaskApp", "Network get all tasks: $e")
+                taskList = StorageOperations.readTaskList(context).toMutableList()
+                Toast.makeText(
+                    context,
+                    "Lista pobrana z pamieci urządzenia. Brak połącznenia z internetem ",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
+        }
+
+    }
+
+    private fun addTaskViaNetwork(task: Task) {
+        val context = this
+
+        runBlocking {
+            try {
+                taskNetworkRepository.addTask(task)
+            } catch (e: Exception) {
+                Log.e("MyTaskApp", "Task dodany do pamieci urządzenia: $e")
+                Toast.makeText(
+                    context,
+                    "Brak poączenia z internetem, spróbuj ponownie",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
+        }
+
     }
 
     @Composable
@@ -142,14 +162,13 @@ class HomeActivity : ComponentActivity() {
             modifier = Modifier.fillMaxSize()
         ) {
             //TaskListView()
-            if(taskList.isEmpty()){
+            if (taskList.isEmpty()) {
                 Text(
                     text = "Lista jest pusta",
                     fontSize = 20.sp,
                     modifier = Modifier.align(Alignment.Center)
                 )
-            }
-            else{
+            } else {
                 TaskListView()
             }
             FloatingActionButton(
