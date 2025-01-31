@@ -149,7 +149,7 @@ class HomeActivity : ComponentActivity() {
             horizontalAlignment = Alignment.Start
         ) {
             Text(
-                text = " Lista TODO cxD ",
+                text = " Lista zadań",
                 fontSize = 30.sp
 
 
