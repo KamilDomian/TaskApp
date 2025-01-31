@@ -10,19 +10,22 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -163,20 +166,42 @@ class HomeActivity : ComponentActivity() {
                         colors = CardDefaults.cardColors(containerColor = task.colorType.color),
                         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 10.dp)
                     ) {
-                        Column(modifier = Modifier.padding(16.dp)) {
+                        Row(){
+
+
+                        Column(modifier = Modifier
+                            .padding(16.dp)
+                            .weight(1f)) {
                             Text(
                                 text = task.title,
                                 fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.fillMaxWidth()
+                                fontWeight = FontWeight.Bold
+
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = task.description,
-                                modifier = Modifier.fillMaxWidth()
+                                text = task.description
+
                             )
 
 
+                        }
+                        Column(modifier = Modifier.padding(top = 8.dp, bottom = 8.dp, end = 8.dp)) {
+                            IconButton(
+                                onClick = {},
+                                modifier = Modifier.size(25.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = "delete task",
+
+
+
+                                )
+
+
+                            }
+                        }
                         }
 
                     }
