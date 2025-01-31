@@ -3,6 +3,9 @@ package com.example.taskapp.model
 import androidx.compose.ui.graphics.Color
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.taskapp.ui.theme.CardGreen
+import com.example.taskapp.ui.theme.CardRed
+import com.example.taskapp.ui.theme.CardYellow
 import com.squareup.moshi.JsonClass
 import java.io.Serializable
 import java.util.UUID
@@ -17,7 +20,7 @@ data class Task(
 ) : Serializable
 
 enum class ColorType(val color: Color) {
-    GREEN(Color.Green),
-    YELLOW(Color.Yellow),
-    MAGENTA(Color.Magenta)
+    GREEN(CardGreen),
+    YELLOW(CardYellow),
+    MAGENTA(CardRed)
 }

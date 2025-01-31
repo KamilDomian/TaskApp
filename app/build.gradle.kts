@@ -66,6 +66,8 @@ dependencies {
     kapt("androidx.room:room-compiler:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
     implementation("io.insert-koin:koin-android:3.5.0")
+    implementation("com.google.accompanist:accompanist-permissions:0.32.0")
+    implementation("io.coil-kt:coil:2.5.0")
 
 
 

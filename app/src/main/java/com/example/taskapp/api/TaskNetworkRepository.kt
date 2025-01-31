@@ -8,10 +8,17 @@ class TaskNetworkRepository (private val taskService:TaskService){
 
 
     suspend fun addTask(task : Task ): TasksIdResponse{
-
-         return taskService.add(task)
+        return taskService.add(task)
     }
     suspend fun getAllTasks(): List<Task> {
-        return taskService.getAll().values.toList()
+        return taskService.getAll().map { element -> element.value.copy(id = element.key) }
+    }
+
+    suspend fun deleteTask(taskId: String){
+        taskService.deleteTask(taskId)
+    }
+
+    suspend fun editTask(task: Task){
+        taskService.editTasks(task.id, task)
     }
 }
