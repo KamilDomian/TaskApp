@@ -35,6 +35,6 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     TaskAppTheme {
-        Greeting("Android")
+        Greeting("Androidd")
     }
 }
