@@ -33,8 +33,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.taskapp.api.ServiceConfiguration
 import com.example.taskapp.api.TaskNetworkRepository
+import com.example.taskapp.database.DatabaseConfiguration
+import com.example.taskapp.database.TaskDatabaseRepository
 import com.example.taskapp.model.Task
-import com.example.taskapp.utl.StorageOperations
 import kotlinx.coroutines.runBlocking
 
 
@@ -56,7 +57,8 @@ class HomeActivity : ComponentActivity() {
         task?.let {
             //Toast.makeText(this, "task:, $task", Toast.LENGTH_LONG).show()
             taskList.add(task)
-            StorageOperations.writeTaskList(this, taskList)
+            //StorageOperations.writeTaskList(this, taskList)
+            insertTaskToDataBase(task)
 
             addTaskViaNetwork(task)
 
@@ -68,15 +70,45 @@ class HomeActivity : ComponentActivity() {
         }
     }
 
+    private fun insertTaskToDataBase(task: Task) {
+        val db = DatabaseConfiguration.getDatabase(this)
+        val taskDatabaseRepository = TaskDatabaseRepository(db)
+
+        runBlocking {
+            taskDatabaseRepository.insertTask(task)
+        }
+
+    }
+
+    private fun insertAllTasksToDatabase(taskList: List<Task>){
+        val db = DatabaseConfiguration.getDatabase(this)
+        val taskDatabaseRepository = TaskDatabaseRepository(db)
+        runBlocking {
+            taskDatabaseRepository.insertAllTasks(taskList)
+        }
+    }
+
+    private fun getAllTasksFromDatabase() {
+        val db = DatabaseConfiguration.getDatabase(this)
+        val taskDatabaseRepository = TaskDatabaseRepository(db)
+        runBlocking {
+            taskList = taskDatabaseRepository.getAllTasks().toMutableList()
+        }
+
+    }
+
+
     private fun getAllTasksViaNetwork() {
         val context = this
         runBlocking {
             try {
                 taskList = taskNetworkRepository.getAllTasks().toMutableList()
-                StorageOperations.writeTaskList(context, taskList)
+                //StorageOperations.writeTaskList(context, taskList)
+                insertAllTasksToDatabase(taskList)
             } catch (e: Exception) {
                 Log.e("MyTaskApp", "Network get all tasks: $e")
-                taskList = StorageOperations.readTaskList(context).toMutableList()
+                //taskList = StorageOperations.readTaskList(context).toMutableList()
+                getAllTasksFromDatabase()
                 Toast.makeText(
                     context,
                     "Lista pobrana z pamieci urządzenia. Brak połącznenia z internetem ",
